@@ -6,7 +6,7 @@ LABEL maintainer="murat.atay@smartiks.com.tr"
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-RUN Invoke-WebRequest -Uri "https://chocolatey.org/install.ps1" -UseBasicParsing | Invoke-Expression; \
+RUN Invoke-WebRequest -Uri https://chocolatey.org/install.ps1 -UseBasicParsing | Invoke-Expression; \
     choco feature enable --name allowGlobalConfirmation; \
     choco feature disable --name showDownloadProgress
 
