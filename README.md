@@ -24,7 +24,9 @@ Jenkins (windowsservercore)
 - visualstudio2017-workload-webbuildtools-
 - docker
 
-SQL Server Express (windowsservercore)
+Microsoft SQL Server Express Backup to Azure (windowsservercore)
+
+Microsoft SQL Server Express (windowsservercore)
 
 Redis (windowsservercore)
 
