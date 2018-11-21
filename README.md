@@ -1,10 +1,31 @@
 # Docker Images
 
-SQL Server Express
-- windowsservercore-1803
+AzCopy (windowsservercore)
 
-Redis
-- windowsservercore-1803
+Caddy (windowsservercore)
+- tls.dns.cloudflare
 
-Caddy (tls.dns.cloudflare)
-- windowsservercore-1803
+Chocolatey (windowsservercore)
+
+Docker Registry (windowsservercore)
+
+Jenkins (windowsservercore)
+- jdk8
+- git
+- nodejs-lts
+- yarn
+- dotnetcore-sdk
+- netfx-4.6.1-devpack
+- netfx-4.6.2-devpack
+- netfx-4.7-devpack
+- netfx-4.7.1-devpack
+- netfx-4.7.2-devpack
+- visualstudio2017buildtools
+- visualstudio2017-workload-webbuildtools-
+- docker
+
+SQL Server Express (windowsservercore)
+
+Redis (windowsservercore)
+
+Nginx (windowsservercore)
