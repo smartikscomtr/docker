@@ -31,3 +31,5 @@ Microsoft SQL Server Express (windowsservercore)
 Redis (windowsservercore)
 
 Nginx (windowsservercore)
+
+SPA Server (windowsservercore)
