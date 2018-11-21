@@ -3,8 +3,8 @@
 SQL Server Express
 - windowsservercore-1803
 
-Caddy
+Redis
 - windowsservercore-1803
 
-Redis
+Caddy (tls.dns.cloudflare)
 - windowsservercore-1803
