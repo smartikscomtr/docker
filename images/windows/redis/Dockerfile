@@ -11,7 +11,7 @@ ENV REDIS_VERSION ${REDIS_VERSION}
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'Continue';"]
 
 RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
-    Invoke-WebRequest -Uri "https://github.com/MSOpenTech/redis/releases/download/win-${env:REDIS_VERSION}/Redis-x64-${env:REDIS_VERSION}.zip" -OutFile 'redis.zip' -UseBasicParsing; \
+    Invoke-WebRequest -Uri "https://github.com/MSOpenTech/redis/releases/download/win-${env:REDIS_VERSION}/Redis-x64-${env:REDIS_VERSION}.zip" -OutFile redis.zip -UseBasicParsing; \
     Expand-Archive redis.zip -dest /bin/redis; \
     Remove-Item redis.zip -Force
 
