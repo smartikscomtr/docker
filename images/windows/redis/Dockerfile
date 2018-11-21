@@ -1,19 +1,22 @@
-FROM microsoft/windowsservercore:1803
+ARG WINDOWS_VERSION
+
+FROM microsoft/windowsservercore:${WINDOWS_VERSION}
+
 LABEL maintainer="murat.atay@smartiks.com.tr"
 
-ENV REDIS_VERSION 3.2.100
+ARG REDIS_VERSION
+
+ENV REDIS_VERSION ${REDIS_VERSION}
+
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'Continue';"]
 
 RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
-    Invoke-WebRequest $('https://github.com/MSOpenTech/redis/releases/download/win-{0}/Redis-x64-{0}.zip' -f $env:REDIS_VERSION) -OutFile 'redis.zip'; \
-    Expand-Archive redis.zip -dest /redis; \
+    Invoke-WebRequest -Uri "https://github.com/MSOpenTech/redis/releases/download/win-${env:REDIS_VERSION}/Redis-x64-${env:REDIS_VERSION}.zip" -OutFile 'redis.zip' -UseBasicParsing; \
+    Expand-Archive redis.zip -dest /bin/redis; \
     Remove-Item redis.zip -Force
-
-RUN (Get-Content /redis/redis.windows.conf) \
-    -Replace '^(bind)\s.*$', '$1 0.0.0.0' \
-    -Replace '^(protected-mode)\s.*$', '$1 no' | \
-    Set-Content /redis/redis.docker.conf
 
 EXPOSE 6379
 
-ENTRYPOINT ["/redis/redis-server.exe", "/redis/redis.docker.conf"]
+ENTRYPOINT ["/bin/redis/redis-server.exe"]
+
+CMD ["--bind", "0.0.0.0", "--protected-mode", "no"]
