@@ -1,24 +1,24 @@
-FROM microsoft/windowsservercore:1803
-LABEL maintainer="murat.atay@smartiks.com.tr"
+ARG WINDOWS_VERSION
 
-ENV sa_password="_" \
-    ACCEPT_EULA="_" \
-    sa_password_path="C:\ProgramData\Docker\secrets\sa-password"
+FROM microsoft/windowsservercore:${WINDOWS_VERSION}
+
+LABEL maintainer="murat.atay@smartiks.com.tr"
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-WORKDIR /
-
-RUN Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=829176" -OutFile sqlexpress.exe; \
-    Start-Process -Wait -FilePath .\sqlexpress.exe -ArgumentList /qs, /x:setup; \
-    .\setup\setup.exe /q /ACTION=Install /INSTANCENAME=SQLEXPRESS /FEATURES=SQLEngine /UPDATEENABLED=0 /SQLSVCACCOUNT='NT AUTHORITY\System' /SQLSYSADMINACCOUNTS='BUILTIN\ADMINISTRATORS' /TCPENABLED=1 /NPENABLED=0 /IACCEPTSQLSERVERLICENSETERMS /SQLUSERDBDIR=C:\MSSQL\Data /SQLUSERDBLOGDIR=C:\MSSQL\Data /SQLBACKUPDIR=C:\MSSQL\Backup; \
-    Remove-Item -Recurse -Force sqlexpress.exe, setup; \
+RUN Invoke-WebRequest -Uri https://go.microsoft.com/fwlink/?linkid=829176 -OutFile sqlexpress.exe -UseBasicParsing; \
+    Start-Process -FilePath sqlexpress.exe -ArgumentList /qs, /x:setup -Wait; \
+    /setup/setup.exe /q /ACTION=Install /INSTANCENAME=SQLEXPRESS /FEATURES=SQLEngine /UPDATEENABLED=0 /SQLSVCACCOUNT='NT AUTHORITY\\System' /SQLSYSADMINACCOUNTS='BUILTIN\\ADMINISTRATORS' /TCPENABLED=1 /NPENABLED=0 /IACCEPTSQLSERVERLICENSETERMS /SQLUSERDBDIR=C:\MSSQL\Data /SQLUSERDBLOGDIR=C:\MSSQL\Data /SQLBACKUPDIR=C:\MSSQL\Backup; \
+    Remove-Item -Path setup -Recurse -Force; \
+    Remove-Item -Path sqlexpress.exe -Recurse -Force; \
     Stop-Service MSSQL`$SQLEXPRESS
 
-RUN Set-ItemProperty -path 'HKLM:\software\microsoft\microsoft sql server\mssql14.SQLEXPRESS\mssqlserver\supersocketnetlib\tcp\ipall' -name tcpdynamicports -value ''; \
-    Set-ItemProperty -path 'HKLM:\software\microsoft\microsoft sql server\mssql14.SQLEXPRESS\mssqlserver\supersocketnetlib\tcp\ipall' -name tcpport -value 1433; \
-    Set-ItemProperty -path 'HKLM:\software\microsoft\microsoft sql server\mssql14.SQLEXPRESS\mssqlserver\' -name LoginMode -value 2
+RUN Set-ItemProperty -Path 'HKLM:\\software\\microsoft\\microsoft sql server\\mssql14.SQLEXPRESS\\mssqlserver\\supersocketnetlib\\tcp\\ipall' -Name tcpdynamicports -Value ''; \
+    Set-ItemProperty -Path 'HKLM:\\software\\microsoft\\microsoft sql server\\mssql14.SQLEXPRESS\\mssqlserver\\supersocketnetlib\\tcp\\ipall' -Name tcpport -Value 1433; \
+    Set-ItemProperty -Path 'HKLM:\\software\\microsoft\\microsoft sql server\\mssql14.SQLEXPRESS\\mssqlserver\\' -Name loginmode -Value 2
 
-COPY start.ps1 /
+COPY rootfs/ /
 
-CMD .\start -sa_password $env:sa_password -ACCEPT_EULA $env:ACCEPT_EULA -Verbose
+EXPOSE 1433
+
+CMD /bin/mssql-server-express.ps1
