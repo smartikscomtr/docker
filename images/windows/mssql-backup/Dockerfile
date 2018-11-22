@@ -14,8 +14,8 @@ RUN choco install azcopy
 
 COPY rootfs/ /
 
-WORKDIR /Backup
+WORKDIR /backup
 
 ENTRYPOINT []
 
-CMD /bin/mssql-backup-to-azure.ps1
+CMD /bin/mssql-backup.ps1
