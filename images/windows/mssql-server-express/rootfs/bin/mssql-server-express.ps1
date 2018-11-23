@@ -16,9 +16,11 @@ $mdfFiles = Get-ChildItem -Path C:\MSSQL\Data -Filter *.mdf
 
 ForEach ($mdfFile in $mdfFiles)
 {
-    Write-Host "Attaching ${mdfFile.BaseName}"
+    $dbName = $mdfFile.BaseName;
 
-    $sqlcmd = "IF EXISTS (SELECT 1 FROM SYS.DATABASES WHERE NAME = '${mdfFile.BaseName}') BEGIN EXEC sp_detach_db [${mdfFile.BaseName}] END; CREATE DATABASE [${mdfFile.BaseName}] ON (FILENAME = N'C:\MSSQL\Data\$($mdfFile.BaseName).mdf'), (FILENAME = N'C:\MSSQL\Data\$($mdfFile.BaseName)_log.ldf') FOR ATTACH"
+    Write-Host "Attaching ${dbName}"
+
+    $sqlcmd = "IF EXISTS (SELECT 1 FROM SYS.DATABASES WHERE NAME = '${dbName}') BEGIN EXEC sp_detach_db [${dbName}] END; CREATE DATABASE [${dbName}] ON (FILENAME = N'C:\MSSQL\Data\${dbName}.mdf'), (FILENAME = N'C:\MSSQL\Data\${dbName}_log.ldf') FOR ATTACH"
 
     & sqlcmd -Q $sqlcmd
 }
